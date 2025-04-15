@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/edit_profile.dart';
+import 'package:flutter_application_2/list_profile.dart';
 
-class Home extends StatefulWidget {
+class DetailProfile extends StatefulWidget {
+  const DetailProfile({super.key});
+
   @override
-  State<Home> createState() => _HomeState();
+  State<DetailProfile> createState() => _DetailProfileState();
 }
 
-class _HomeState extends State<Home> {
+class _DetailProfileState extends State<DetailProfile> {
   String nama = "Putri";
 
   String nip = "199404112022032022";
@@ -47,7 +51,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: _appBarChange,
-        title: Text('$angka', style: TextStyle(fontSize: 32, color: _textAppBarChange),),
+        title: Text('Detail Profil', style: TextStyle(color: _textAppBarChange),),
         ),
       body: SingleChildScrollView(
         child: Column(
@@ -139,6 +143,7 @@ class _HomeState extends State<Home> {
                 ],),
                 )
               ),],  ),),
+              Center(child: Text('$angka', style: TextStyle(fontSize: 36),),),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: 
@@ -158,6 +163,16 @@ class _HomeState extends State<Home> {
                 child: ElevatedButton(onPressed: () {
                     _changeColor();
                     }, child: Icon(Icons.color_lens),),
+              ),
+              Center(
+                child: ElevatedButton(onPressed: () {
+                   Navigator.push(context, MaterialPageRoute(builder: (context) => ListProfile(),));
+                    }, child: Text("Berpindah ke Layar List Profil"),),
+              ),
+              Center(
+                child: ElevatedButton(onPressed: () {
+                   Navigator.push(context, MaterialPageRoute(builder: (context) => EditProfile(angka: angka, name: nama),));
+                    }, child: Text("Berpindah ke Layar Edit Profil"),),
               ),
           ]
         ),
