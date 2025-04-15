@@ -1,15 +1,53 @@
 import 'package:flutter/material.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
   String nama = "Putri";
+
   String nip = "199404112022032022";
+
   String alamat = "Denpasar";
+
+  Color _appBarChange = Colors.pink;
+  Color _textAppBarChange = Colors.amber;
+
+  void _changeColor() {
+    setState(() {
+      _appBarChange = _appBarChange == Colors.pink ? Colors.black : Colors.pink;
+      _textAppBarChange = _textAppBarChange == Colors.amber ? Colors.white : Colors.amber;
+    });
+  }
+
+  int angka = 0;
+
+  void _plusOne() {
+    setState(() {
+      angka++;
+    });
+  }
+
+  void _zero() {
+    setState(() {
+      angka = 0;
+    });
+  }
+
+  void _minusOne() {
+    setState(() {
+      angka--;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.pink,
+        backgroundColor: _appBarChange,
+        title: Text('$angka', style: TextStyle(fontSize: 32, color: _textAppBarChange),),
         ),
       body: SingleChildScrollView(
         child: Column(
@@ -100,11 +138,27 @@ class Home extends StatelessWidget {
                   Text("SD: SDK Soverdi Tuban", style: TextStyle(fontSize: 24, color: Colors.pink),),
                 ],),
                 )
+              ),],  ),),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: 
+                [
+                  ElevatedButton(onPressed: () {
+                    _plusOne();
+                  }, child: Icon(Icons.plus_one)),
+                  ElevatedButton(onPressed: () {
+                    _zero();
+                  }, child: Icon(Icons.exposure_zero)),
+                  ElevatedButton(onPressed: () {
+                    _minusOne();
+                  }, child: Icon(Icons.exposure_minus_1))
+                ]
               ),
-                ], 
-                 
+              Center(
+                child: ElevatedButton(onPressed: () {
+                    _changeColor();
+                    }, child: Icon(Icons.color_lens),),
               ),
-            ),
           ]
         ),
       ),
