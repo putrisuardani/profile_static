@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_2/screens/detail_profile.dart';
 import '../models/profile.dart';
 
-class ListProfile extends StatelessWidget {
+class ListProfile extends StatefulWidget {
   ListProfile({super.key});
 
+  @override
+  State<ListProfile> createState() => _ListProfileState();
+}
+
+class _ListProfileState extends State<ListProfile> {
   final List<Profile> listProfile = [
     Profile(
       name: 'Putri 1',
@@ -58,6 +63,20 @@ class ListProfile extends StatelessWidget {
     )
   ];
 
+  void deleteItem(int indexItem) {
+    listProfile.removeAt(indexItem);
+    setState(() {});
+  }
+
+  void addItem() {
+    int lastIndex = listProfile.length;
+    listProfile.add(Profile(
+        name: 'Putri' + '${lastIndex + 1}',
+        description: "dosen",
+        imageUrl: "https://i.pravatar.cc/150?img=" + "${lastIndex + 1}"));
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,8 +103,13 @@ class ListProfile extends StatelessWidget {
               backgroundImage: NetworkImage(listProfile[index].imageUrl),
             ),
             title: Text(listProfile[index].name),
+            trailing: IconButton(
+                onPressed: () => deleteItem(index),
+                icon: Icon(
+                  Icons.delete,
+                  color: Colors.red,
+                )),
             onTap: () {
-              debugPrint('listProfile[index]');
               Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -95,6 +119,10 @@ class ListProfile extends StatelessWidget {
             },
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => addItem(),
+        child: Icon(Icons.add),
       ),
     );
   }

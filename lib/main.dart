@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/screens/detail_profile.dart';
 import 'package:flutter_application_2/screens/list_profile.dart';
 
 void main() {

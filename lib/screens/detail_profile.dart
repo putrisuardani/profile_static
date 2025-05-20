@@ -228,11 +228,7 @@ class _DetailProfileState extends State<DetailProfile> {
           Center(
             child: ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ListProfile(),
-                    ));
+                Navigator.pop(context);
               },
               child: Text("Berpindah ke Layar List Profil"),
             ),
