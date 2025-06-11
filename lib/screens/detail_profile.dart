@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/screens/edit_profile.dart';
-import 'package:flutter_application_2/screens/list_profile.dart';
-import '../models/profile.dart';
+import 'package:profile_static/models/profile.dart';
+import 'package:profile_static/screens/list_profile.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:profile_static/screens/edit_profile.dart';
 
 class DetailProfile extends StatefulWidget {
   final Profile profile;
@@ -16,46 +17,11 @@ class _DetailProfileState extends State<DetailProfile> {
 
   String alamat = "Denpasar";
 
-  Color _appBarChange = Colors.pink;
-  Color _textAppBarChange = Colors.amber;
-
-  void _changeColor() {
-    setState(() {
-      _appBarChange = _appBarChange == Colors.pink ? Colors.black : Colors.pink;
-      _textAppBarChange =
-          _textAppBarChange == Colors.amber ? Colors.white : Colors.amber;
-    });
-  }
-
-  int angka = 0;
-
-  void _plusOne() {
-    setState(() {
-      angka++;
-    });
-  }
-
-  void _zero() {
-    setState(() {
-      angka = 0;
-    });
-  }
-
-  void _minusOne() {
-    setState(() {
-      angka--;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: _appBarChange,
-        title: Text(
-          'Detail Profil',
-          style: TextStyle(color: _textAppBarChange),
-        ),
+        title: Text("Detail Profil"),
       ),
       body: SingleChildScrollView(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -106,11 +72,17 @@ class _DetailProfileState extends State<DetailProfile> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                Icons.call,
-                size: 48,
-                color: Colors.pink[200],
-              ),
+              IconButton(
+                  onPressed: () {
+                    final Uri telUri =
+                        Uri(scheme: 'tel', path: '+6281337136811');
+                    launchUrl(telUri);
+                  },
+                  icon: Icon(
+                    Icons.call,
+                    size: 48,
+                    color: Colors.pink[200],
+                  )),
               SizedBox(
                 width: 16,
               ),
@@ -136,7 +108,7 @@ class _DetailProfileState extends State<DetailProfile> {
                   child: Column(
                     children: [
                       Text(
-                        "Biodata Saya",
+                        "${widget.profile.description}",
                         style: TextStyle(
                             fontSize: 24,
                             color: Colors.pink,
@@ -195,53 +167,46 @@ class _DetailProfileState extends State<DetailProfile> {
             ),
           ),
           Center(
-            child: Text(
-              '$angka',
-              style: TextStyle(fontSize: 36),
-            ),
-          ),
-          Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-            ElevatedButton(
-                onPressed: () {
-                  _plusOne();
-                },
-                child: Icon(Icons.plus_one)),
-            ElevatedButton(
-                onPressed: () {
-                  _zero();
-                },
-                child: Icon(Icons.exposure_zero)),
-            ElevatedButton(
-                onPressed: () {
-                  _minusOne();
-                },
-                child: Icon(Icons.exposure_minus_1))
-          ]),
-          Center(
-            child: ElevatedButton(
+            child: TextButton.icon(
               onPressed: () {
-                _changeColor();
-              },
-              child: Icon(Icons.color_lens),
-            ),
-          ),
-          Center(
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text("Berpindah ke Layar List Profil"),
-            ),
-          ),
-          Center(
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
+                if (Navigator.canPop(context)) {
+                  Navigator.pop(context); // pop DetailProfile
+
+                  // Tunggu sejenak sebelum pop kedua
+                  Future.delayed(Duration(milliseconds: 50), () {
+                    if (Navigator.canPop(context)) {
+                      Navigator.pop(
+                          context, true); // pop ChatPage, kirim sinyal
+                    }
+                  });
+                } else {
+                  // fallback ke ListProfile langsung
+                  Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          EditProfile(angka: angka, name: widget.profile.name),
-                    ));
+                    MaterialPageRoute(builder: (_) => ListProfile()),
+                  );
+                }
+              },
+              icon: Icon(Icons.arrow_back),
+              label: Text("Kembali ke Daftar"),
+            ),
+          ),
+          Center(
+            child: ElevatedButton(
+              onPressed: () async {
+                final newName = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        EditProfile(name: widget.profile.name),
+                  ),
+                );
+
+                if (newName != null) {
+                  setState(() {
+                    widget.profile.name = newName;
+                  });
+                }
               },
               child: Text("Berpindah ke Layar Edit Profil"),
             ),

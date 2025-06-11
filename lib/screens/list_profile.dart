@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/screens/detail_profile.dart';
+import 'package:profile_static/screens/chat_list_page.dart';
+import 'package:profile_static/screens/chat_page.dart';
+import 'package:profile_static/screens/detail_profile.dart';
 import '../models/profile.dart';
 
 class ListProfile extends StatefulWidget {
@@ -10,6 +12,12 @@ class ListProfile extends StatefulWidget {
 }
 
 class _ListProfileState extends State<ListProfile> {
+  final Profile myProfile = Profile(
+    name: 'Putri 0',
+    description: "UI/UX Designer",
+    imageUrl: "https://i.pravatar.cc/150?img=1",
+  );
+
   final List<Profile> listProfile = [
     Profile(
       name: 'Putri 1',
@@ -18,49 +26,24 @@ class _ListProfileState extends State<ListProfile> {
     ),
     Profile(
       name: 'Putri 2',
-      description: "UI/UX Designer",
+      description: "Team Lead",
       imageUrl: "https://i.pravatar.cc/150?img=2",
     ),
     Profile(
       name: 'Putri 3',
-      description: "UI/UX Designer",
+      description: "Project Manager",
       imageUrl: "https://i.pravatar.cc/150?img=3",
     ),
     Profile(
       name: 'Putri 4',
-      description: "UI/UX Designer",
+      description: "QA Engineer",
       imageUrl: "https://i.pravatar.cc/150?img=4",
     ),
     Profile(
       name: 'Putri 5',
-      description: "UI/UX Designer",
+      description: "Backend",
       imageUrl: "https://i.pravatar.cc/150?img=5",
     ),
-    Profile(
-      name: 'Putri 6',
-      description: "UI/UX Designer",
-      imageUrl: "https://i.pravatar.cc/150?img=6",
-    ),
-    Profile(
-      name: 'Putri 7',
-      description: "UI/UX Designer",
-      imageUrl: "https://i.pravatar.cc/150?img=7",
-    ),
-    Profile(
-      name: 'Putri 8',
-      description: "UI/UX Designer",
-      imageUrl: "https://i.pravatar.cc/150?img=8",
-    ),
-    Profile(
-      name: 'Putri 9',
-      description: "UI/UX Designer",
-      imageUrl: "https://i.pravatar.cc/150?img=9",
-    ),
-    Profile(
-      name: 'Putri 10',
-      description: "UI/UX Designer",
-      imageUrl: "https://i.pravatar.cc/150?img=10",
-    )
   ];
 
   void deleteItem(int indexItem) {
@@ -72,7 +55,7 @@ class _ListProfileState extends State<ListProfile> {
     int lastIndex = listProfile.length;
     listProfile.add(Profile(
         name: 'Putri' + '${lastIndex + 1}',
-        description: "dosen",
+        description: "dosen" + '${lastIndex + 1}',
         imageUrl: "https://i.pravatar.cc/150?img=" + "${lastIndex + 1}"));
     setState(() {});
   }
@@ -81,21 +64,9 @@ class _ListProfileState extends State<ListProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("List Profile"),
+        title: Text("List Contacts"),
       ),
-      body:
-
-          // GridView.builder(
-          //   gridDelegate:
-          //       SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-          //   itemCount: listProfile.length,
-          //   itemBuilder: (context, index) {
-          //     return Text(listProfile[index]);
-          //   },
-          // )
-
-          ListView.builder(
-        //scrollDirection: Axis.horizontal,
+      body: ListView.builder(
         itemCount: listProfile.length,
         itemBuilder: (context, index) {
           return ListTile(
@@ -111,11 +82,11 @@ class _ListProfileState extends State<ListProfile> {
                 )),
             onTap: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        DetailProfile(profile: listProfile[index]),
-                  ));
+                context,
+                MaterialPageRoute(
+                  builder: (_) => ChatPage(friend: listProfile[index]),
+                ),
+              );
             },
           );
         },
@@ -123,6 +94,36 @@ class _ListProfileState extends State<ListProfile> {
       floatingActionButton: FloatingActionButton(
         onPressed: () => addItem(),
         child: Icon(Icons.add),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+              icon: Icon(Icons.people), label: "List Contacts"),
+          BottomNavigationBarItem(icon: Icon(Icons.chat), label: "Chats"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.person), label: "My Profile"),
+        ],
+        onTap: (index) async {
+          if (index == 0) {
+            // tetap di halaman sekarang
+            return;
+          } else if (index == 1) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => ChatListPage()),
+            );
+          } else if (index == 2) {
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => DetailProfile(profile: myProfile),
+              ),
+            );
+            if (result == true) {
+              setState(() {}); // Refresh jika profil telah diubah
+            }
+          }
+        },
       ),
     );
   }
