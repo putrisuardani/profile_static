@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:profile_static/models/profile.dart';
-import 'package:profile_static/screens/list_profile.dart';
+// ignore: depend_on_referenced_packages
 import 'package:url_launcher/url_launcher.dart';
 import 'package:profile_static/screens/edit_profile.dart';
 
@@ -13,9 +13,18 @@ class DetailProfile extends StatefulWidget {
 }
 
 class _DetailProfileState extends State<DetailProfile> {
-  String nip = "199404112022032022";
+  final List<String> gallery = [
+    "https://picsum.photos/200?1",
+    "https://picsum.photos/200?2",
+    "https://picsum.photos/200?3",
+    "https://picsum.photos/200?4",
+  ];
 
-  String alamat = "Denpasar";
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,11 +42,10 @@ class _DetailProfileState extends State<DetailProfile> {
                   width: double.infinity,
                   height: 200,
                   decoration: BoxDecoration(
-                    //image: DecorationImage(image: NetworkImage('https://lh5.googleusercontent.com/proxy/V5fZ-KYp4eDzEOB6IwB_CWs0E4--3FbjgNCYmKHAqOdZWtzmB4-N1ADf7yJLdYlRYaEW-SqzFWltYq3ldtRpBxn4Esg9ZCP7qdmC2pajgV0TP75SzxlenQs_FBg2kxAYVxHzTCgjtLF7Hef_gIRbqalPa_pqeL90SLKzOc0fwbuG54x9yrxv2zKCXep2jePrj1x93XnfgQ')),
-                    gradient: LinearGradient(
-                        colors: [Colors.pink, Colors.purple],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight),
+                    image: DecorationImage(
+                      image: NetworkImage(widget.profile.coverPhoto),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
                 Positioned(
@@ -48,7 +56,8 @@ class _DetailProfileState extends State<DetailProfile> {
                         shape: BoxShape.circle, color: Colors.white),
                     child: CircleAvatar(
                       radius: 80,
-                      backgroundImage: NetworkImage(widget.profile.imageUrl),
+                      backgroundImage:
+                          NetworkImage(widget.profile.profilePhoto),
                     ),
                   ),
                 ),
@@ -69,123 +78,99 @@ class _DetailProfileState extends State<DetailProfile> {
           SizedBox(
             height: 96,
           ),
+          Center(
+              child: Text(widget.profile.name,
+                  style: TextStyle(fontSize: 24, color: Colors.pink[400]))),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               IconButton(
                   onPressed: () {
                     final Uri telUri =
-                        Uri(scheme: 'tel', path: '+6281337136811');
+                        Uri(scheme: 'tel', path: widget.profile.phone);
                     launchUrl(telUri);
                   },
                   icon: Icon(
                     Icons.call,
-                    size: 48,
+                    size: 24,
                     color: Colors.pink[200],
                   )),
               SizedBox(
-                width: 16,
+                width: 8,
               ),
-              Icon(Icons.email, size: 48, color: Colors.pink[200]),
+              Icon(Icons.email, size: 24, color: Colors.pink[200]),
               SizedBox(
                 width: 16,
               ),
-              Icon(Icons.share, size: 48, color: Colors.pink[200]),
+              Icon(Icons.share, size: 24, color: Colors.pink[200]),
             ],
           ),
           SizedBox(
-            height: 48,
+            height: 16,
           ),
           SizedBox(
-            height: 200,
+            height: 265,
             child: PageView(
               scrollDirection: Axis.horizontal,
               children: [
                 Card(
                     child: SizedBox(
                   width: double.infinity,
-                  //height: 150,
-                  child: Column(
-                    children: [
-                      Text(
-                        "${widget.profile.description}",
-                        style: TextStyle(
-                            fontSize: 24,
-                            color: Colors.pink,
-                            decoration: TextDecoration.underline),
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Text(
-                        "Nama: ${widget.profile.name}",
-                        style: TextStyle(fontSize: 24, color: Colors.pink),
-                      ),
-                      Text(
-                        "NIP: $nip",
-                        style: TextStyle(fontSize: 24, color: Colors.pink),
-                      ),
-                      Text(
-                        "Alamat: $alamat",
-                        style: TextStyle(fontSize: 24, color: Colors.pink),
-                      ),
-                    ],
+                  child: GridView.builder(
+                    shrinkWrap: true,
+                    itemCount: gallery.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3),
+                    itemBuilder: (context, index) {
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.network(
+                          gallery[index],
+                          fit: BoxFit.cover,
+                        ),
+                      );
+                    },
                   ),
                 )),
                 Card(
-                    child: SizedBox(
-                  width: double.infinity,
-                  //height: 150,
-                  child: Column(
-                    children: [
-                      Text(
-                        "Pendidikan Saya",
-                        style: TextStyle(
-                            fontSize: 24,
-                            color: Colors.pink,
-                            decoration: TextDecoration.underline),
+                  margin: EdgeInsets.all(16),
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Center(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Kata-kata hari ini...",
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  fontStyle: FontStyle.italic,
+                                  color: Colors.pink[700]),
+                              textAlign: TextAlign.center,
+                            ),
+                            SizedBox(height: 16),
+                            Text(
+                              widget.profile.quote,
+                              style: TextStyle(
+                                  fontSize: 20, fontStyle: FontStyle.italic),
+                              textAlign: TextAlign.center,
+                            ),
+                            SizedBox(height: 24),
+                          ],
+                        ),
                       ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Text(
-                        "SMA: SMA Negeri 1 Tabanan",
-                        style: TextStyle(fontSize: 24, color: Colors.pink),
-                      ),
-                      Text(
-                        "SMP: SMP Negeri 1 Kuta",
-                        style: TextStyle(fontSize: 24, color: Colors.pink),
-                      ),
-                      Text(
-                        "SD: SDK Soverdi Tuban",
-                        style: TextStyle(fontSize: 24, color: Colors.pink),
-                      ),
-                    ],
+                    ),
                   ),
-                )),
+                ),
               ],
             ),
           ),
           Center(
             child: TextButton.icon(
               onPressed: () {
-                if (Navigator.canPop(context)) {
-                  Navigator.pop(context); // pop DetailProfile
-
-                  // Tunggu sejenak sebelum pop kedua
-                  Future.delayed(Duration(milliseconds: 50), () {
-                    if (Navigator.canPop(context)) {
-                      Navigator.pop(
-                          context, true); // pop ChatPage, kirim sinyal
-                    }
-                  });
-                } else {
-                  // fallback ke ListProfile langsung
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (_) => ListProfile()),
-                  );
-                }
+                Navigator.pop(context, true);
               },
               icon: Icon(Icons.arrow_back),
               label: Text("Kembali ke Daftar"),
@@ -201,14 +186,15 @@ class _DetailProfileState extends State<DetailProfile> {
                         EditProfile(name: widget.profile.name),
                   ),
                 );
-
                 if (newName != null) {
                   setState(() {
                     widget.profile.name = newName;
                   });
+
+                  Navigator.pop(context, widget.profile);
                 }
               },
-              child: Text("Berpindah ke Layar Edit Profil"),
+              child: Text("Edit Profil"),
             ),
           ),
         ]),

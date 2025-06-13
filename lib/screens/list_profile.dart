@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:profile_static/screens/chat_list_page.dart';
-import 'package:profile_static/screens/chat_page.dart';
 import 'package:profile_static/screens/detail_profile.dart';
 import '../models/profile.dart';
 
@@ -13,37 +11,61 @@ class ListProfile extends StatefulWidget {
 
 class _ListProfileState extends State<ListProfile> {
   final Profile myProfile = Profile(
-    name: 'Putri 0',
-    description: "UI/UX Designer",
-    imageUrl: "https://i.pravatar.cc/150?img=1",
+    name: 'Luh Gede Putri',
+    quote:
+        '“Jangan jadi orang lucu karena ujung-ujungnya cuma enak dijadiin temen.”',
+    phone: '+6281337136811',
+    profilePhoto: 'https://i.pravatar.cc/150?img=25',
+    coverPhoto: 'https://picsum.photos/600/200?xrandom=25',
   );
 
   final List<Profile> listProfile = [
     Profile(
-      name: 'Putri 1',
-      description: "UI/UX Designer",
-      imageUrl: "https://i.pravatar.cc/150?img=1",
+      name: 'Putri Anjani',
+      quote:
+          '“Kalau kamu merasa hidup ini tidak adil, coba deh jadi tanaman. Setiap hari disiram, dipupuk, tapi tetep aja gak bisa jalan-jalan."',
+      phone: '+6281234567890',
+      profilePhoto: 'https://i.pravatar.cc/150?img=11',
+      coverPhoto: 'https://picsum.photos/600/200?random=11',
     ),
     Profile(
-      name: 'Putri 2',
-      description: "Team Lead",
-      imageUrl: "https://i.pravatar.cc/150?img=2",
+      name: 'Dewi Saraswati',
+      quote:
+          '“Biarpun katanya nggak higienis, tapi makan di pinggir jalan masih jauh lebih sehat daripada makan di tengah jalan.”',
+      phone: '+6282234567891',
+      profilePhoto: 'https://i.pravatar.cc/150?img=12',
+      coverPhoto: 'https://picsum.photos/600/200?random=12',
     ),
     Profile(
-      name: 'Putri 3',
-      description: "Project Manager",
-      imageUrl: "https://i.pravatar.cc/150?img=3",
+      name: 'Ayu Kartika',
+      quote:
+          '“Sebenarnya pelajaran matematika di Amerika lebih susah karena dicampur bahasa Inggris.”',
+      phone: '+6283234567892',
+      profilePhoto: 'https://i.pravatar.cc/150?img=13',
+      coverPhoto: 'https://picsum.photos/600/200?random=13',
     ),
     Profile(
-      name: 'Putri 4',
-      description: "QA Engineer",
-      imageUrl: "https://i.pravatar.cc/150?img=4",
+      name: 'Mega Wulandari',
+      quote: '“Hidup itu harus seperti kopi, kuat, hangat, dan bikin melek.”',
+      phone: '+6284234567893',
+      profilePhoto: 'https://i.pravatar.cc/150?img=14',
+      coverPhoto: 'https://picsum.photos/600/200?random=14',
     ),
     Profile(
-      name: 'Putri 5',
-      description: "Backend",
-      imageUrl: "https://i.pravatar.cc/150?img=5",
+      name: 'Sinta Rahayu',
+      quote: '"Cintaku padamu seperti WiFi publik—lemah tapi nyambung."',
+      phone: '+6285234567894',
+      profilePhoto: 'https://i.pravatar.cc/150?img=15',
+      coverPhoto: 'https://picsum.photos/600/200?random=15',
     ),
+  ];
+
+  final List<String> quotes = [
+    "“Kamu tuh kayak password, susah ditebak tapi gampang dilupakan.”",
+    "“Ngopi dulu biar hidup nggak se-pahit kenyataan.",
+    "“Sarapan dulu, biar kuat ngehadapin kenyataan.”",
+    "“Laptop boleh panas, asal hubungan kita tetap adem.”",
+    "“Nggak apa-apa nyasar dulu, yang penting jangan berhenti jalan.”"
   ];
 
   void deleteItem(int indexItem) {
@@ -53,10 +75,14 @@ class _ListProfileState extends State<ListProfile> {
 
   void addItem() {
     int lastIndex = listProfile.length;
+    int phoneSuffix = 1000 + lastIndex;
     listProfile.add(Profile(
         name: 'Putri' + '${lastIndex + 1}',
-        description: "dosen" + '${lastIndex + 1}',
-        imageUrl: "https://i.pravatar.cc/150?img=" + "${lastIndex + 1}"));
+        quote: quotes[DateTime.now().day % quotes.length],
+        phone: '+62812$phoneSuffix',
+        profilePhoto: "https://i.pravatar.cc/150?img=" + "${lastIndex + 1}",
+        coverPhoto:
+            'https://picsum.photos/600/200?random=' + '${lastIndex + 1}'));
     setState(() {});
   }
 
@@ -64,14 +90,14 @@ class _ListProfileState extends State<ListProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("List Contacts"),
+        title: Text("Friends"),
       ),
       body: ListView.builder(
         itemCount: listProfile.length,
         itemBuilder: (context, index) {
           return ListTile(
             leading: CircleAvatar(
-              backgroundImage: NetworkImage(listProfile[index].imageUrl),
+              backgroundImage: NetworkImage(listProfile[index].profilePhoto),
             ),
             title: Text(listProfile[index].name),
             trailing: IconButton(
@@ -80,13 +106,18 @@ class _ListProfileState extends State<ListProfile> {
                   Icons.delete,
                   color: Colors.red,
                 )),
-            onTap: () {
-              Navigator.push(
+            onTap: () async {
+              final updatedProfile = await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => ChatPage(friend: listProfile[index]),
+                  builder: (_) => DetailProfile(profile: listProfile[index]),
                 ),
               );
+              if (updatedProfile != null) {
+                setState(() {
+                  listProfile[index] = updatedProfile;
+                });
+              }
             },
           );
         },
@@ -97,9 +128,7 @@ class _ListProfileState extends State<ListProfile> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-              icon: Icon(Icons.people), label: "List Contacts"),
-          BottomNavigationBarItem(icon: Icon(Icons.chat), label: "Chats"),
+          BottomNavigationBarItem(icon: Icon(Icons.people), label: "Friends"),
           BottomNavigationBarItem(
               icon: Icon(Icons.person), label: "My Profile"),
         ],
@@ -108,11 +137,6 @@ class _ListProfileState extends State<ListProfile> {
             // tetap di halaman sekarang
             return;
           } else if (index == 1) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => ChatListPage()),
-            );
-          } else if (index == 2) {
             final result = await Navigator.push(
               context,
               MaterialPageRoute(
